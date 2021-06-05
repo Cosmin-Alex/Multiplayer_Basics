@@ -22,6 +22,8 @@ public class MyNetworkPlayer : NetworkBehaviour
     //Gave the default valie of "Missing Name" in case something goes wrong when setting a name, at least we will have a value that's telling us that the name is missing
     private string displayName = "Missing Name";
 
+    #region Server
+
     //The displayName string is private and we need a public way to access it
 
     //This method is only ever going to be run only on the server
@@ -48,6 +50,37 @@ public class MyNetworkPlayer : NetworkBehaviour
         displayColor = newColor;
     }
 
+    //When its called the server will allow it because it has commad, so it will trigger the syncVar and then it will update it on all the clients
+    [Command]
+    private void CmdSetDisplayName(string newDisplayName)
+    {
+
+
+        SetDisplayName(newDisplayName);
+    }
+
+    [ClientRpc]
+    private void RpcBlessTheClientsNames(string blessedDisplayName)
+    {
+        SetDisplayName(blessedDisplayName);
+    }
+
+    [ContextMenu("Bless the clients")]
+    private void BlessAllTheClients()
+    {
+        CmdBlessPlayers();
+    }
+
+    [Command]
+    private void CmdBlessPlayers()
+    {
+        RpcBlessTheClientsNames("Blessed Names");
+    }
+
+    #endregion
+
+
+    #region Client
     //Logic to update the color
     //We need to use this as a callback for when the color changes thus we need to hook it, Mirror needs 2 parameters for some reason
     private void HandleDisplayColorUpdated(Color oldColor, Color newColor)
@@ -61,4 +94,17 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         displayNameText.text = newDisplayName;
     }
+
+    //ContectMenu - If I right click on the script component in the editor, it will run what's below it
+    [ContextMenu("Set My Name")]
+    //If from a client the below method is called, it will run the CmdSetDisplayName and because its a Command, the server will allow it
+    private void SetMyname()
+    {
+        CmdSetDisplayName("My New Name");
+    }
+
+    #endregion
+
+
+
 }
