@@ -6,7 +6,7 @@ using UnityEngine;
 public class MyNetworkManager : NetworkManager
 {
     //private int to hold the count of connected players
-    private int numberOfPlayers;
+    //private int numberOfPlayers;
 
     //Reference to the virtual function in NetworkManager and that we are going to override it
     public override void OnClientConnect(NetworkConnection conn)
@@ -28,10 +28,14 @@ public class MyNetworkManager : NetworkManager
         Debug.Log("Server Log: A player has been added!");
 
         //Get the connected players and store them
-        numberOfPlayers = numPlayers;
+        //numberOfPlayers = numPlayers;
 
         //Tell me how the number of players connected
-        Debug.Log("Server Log: Number of players = " + numberOfPlayers);
+        //Debug.Log("Server Log: Number of players = " + numberOfPlayers);
+
+        //The "$" at the begining the string changes the static string into a dinamic one - this is feature in C# - this lets us add a variable into the string
+        //Used the {} in order to recognize the variable
+        Debug.Log($"Server Log: Number of players = {numPlayers}");
     }
 
     
