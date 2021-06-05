@@ -2,11 +2,21 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class MyNetworkPlayer : NetworkBehaviour
 {
+    //Ref to TextMesh pro element
+    [SerializeField]
+    private TMP_Text displayNameText = null;
+    //Ref to a Renderer so we can change the renderer color
+    [SerializeField]
+    private Renderer displayColorRenderer = null;
+
+
+
     //If you put this before a field will sync var from the server to the clients
-    [SyncVar]
+    [SyncVar(hook = nameof(HandleDisplayNameUpdated))]
     //Because we want to see it in the inspector
     [SerializeField]
     //Gave the default valie of "Missing Name" in case something goes wrong when setting a name, at least we will have a value that's telling us that the name is missing
@@ -25,7 +35,8 @@ public class MyNetworkPlayer : NetworkBehaviour
         displayName = newDisplayName;
     }
 
-    [SyncVar]
+    //why the hook, whenever the display color gets updated on a client, the function gets called with the old and new color passed in and with the new color we can update the renderer
+    [SyncVar(hook = nameof(HandleDisplayColorUpdated))]
     [SerializeField]
     //The default color is black
     private Color displayColor = Color.black;
@@ -37,4 +48,17 @@ public class MyNetworkPlayer : NetworkBehaviour
         displayColor = newColor;
     }
 
+    //Logic to update the color
+    //We need to use this as a callback for when the color changes thus we need to hook it, Mirror needs 2 parameters for some reason
+    private void HandleDisplayColorUpdated(Color oldColor, Color newColor)
+    {
+        //Change the base color of the renderer
+        displayColorRenderer.material.SetColor("_BaseColor", newColor);
+    }
+
+    //Logic to update the Display Name of the player
+    private void HandleDisplayNameUpdated(string oldDisplayName, string newDisplayName)
+    {
+        displayNameText.text = newDisplayName;
+    }
 }
