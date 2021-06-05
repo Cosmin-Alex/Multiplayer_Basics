@@ -31,6 +31,18 @@ public class MyNetworkManager : NetworkManager
 
         //Set the display name - when you join, if your the first player, you will be called Player 1, and so fourth
         player.SetDisplayName($"Player {numPlayers}");
+
+        //Displayes the color of the player between a random range
+        //player.SetPlayerColor(new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
+
+        //Made the code cleaner
+        Color displayColor = new Color(
+            Random.Range(0f, 1f),
+            Random.Range(0f, 1f),
+            Random.Range(0f, 1f));
+
+        player.SetPlayerColor(displayColor);
+
         //So technically now first do what you normaly do (base.OnClientConnect(conn);) and then call the debug message
         Debug.Log("Server Log: A player has been added!");
 

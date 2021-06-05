@@ -24,4 +24,17 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         displayName = newDisplayName;
     }
+
+    [SyncVar]
+    [SerializeField]
+    //The default color is black
+    private Color displayColor = Color.black;
+
+    [Server]
+    public void SetPlayerColor(Color newColor)
+    {
+        //newColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        displayColor = newColor;
+    }
+
 }
