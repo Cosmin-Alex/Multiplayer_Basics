@@ -13,7 +13,10 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SerializeField]
     private Renderer displayColorRenderer = null;
 
+    public int maxLenghtOfDisplayName = 11;
+    public string playerName;
 
+    bool containsWhiteSpaces;
 
     //If you put this before a field will sync var from the server to the clients
     [SyncVar(hook = nameof(HandleDisplayNameUpdated))]
@@ -54,9 +57,8 @@ public class MyNetworkPlayer : NetworkBehaviour
     [Command]
     private void CmdSetDisplayName(string newDisplayName)
     {
-
-
-        SetDisplayName(newDisplayName);
+        DisplayNameValidation(newDisplayName);
+        
     }
 
     [ClientRpc]
@@ -100,11 +102,42 @@ public class MyNetworkPlayer : NetworkBehaviour
     //If from a client the below method is called, it will run the CmdSetDisplayName and because its a Command, the server will allow it
     private void SetMyname()
     {
-        CmdSetDisplayName("My New Name");
+        CmdSetDisplayName(playerName);
     }
 
     #endregion
 
+    //Check for dipplay name rules
+    #region DispayNameValidationRules
 
+    private void DisplayNameValidation(string displayNameValidation)
+    {
+        //Check for the lenght
+        if (displayNameValidation.Length > maxLenghtOfDisplayName)
+        {
+            Debug.Log($"Display name has {displayNameValidation.Length} characters. Please choose something shorter than {maxLenghtOfDisplayName} characters!");
+
+            return;
+        }
+
+        //Check if the name contains only whiteSpaces
+        if(string.IsNullOrWhiteSpace(displayNameValidation))
+        {
+            Debug.Log("Your name contains only white space characters. Please choose a different name!");
+
+            return;
+        }
+
+        //If their valid, set the name then!
+        else
+        {            
+            Debug.Log($"Your Name contains less than {maxLenghtOfDisplayName} characters!");
+            Debug.Log("Your name does NOT contain only white space characters.");
+            SetDisplayName(displayNameValidation);
+            return;
+        }
+    }
+
+    #endregion
 
 }
